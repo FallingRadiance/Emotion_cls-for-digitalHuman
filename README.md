@@ -2,6 +2,11 @@
 
 本目录实现作业 1 的 NLP 任务：基于中文预训练语言模型做微博文本情绪分类，并把分类结果映射为数字人的表情、动作和语气控制信号。
 
+目录分工：
+
+- 根目录脚本：基础任务，完成数据下载、模型微调、评估和单句预测。
+- `innovation/`：创新任务，完成路线 B 的流式 token 级情绪状态估计。
+
 ## 任务选择
 
 - 数据集：SMP2020-EWECT 微博情绪分类，六类标签为 `neutral/happy/angry/sad/fear/surprise`。
@@ -23,6 +28,18 @@ conda run -n ai_girl python predict.py "我今天真的很开心"
 conda run -n ai_girl python demo_avatar_emotion.py
 ```
 
+创新任务运行：
+
+```bash
+conda run -n ai_girl python innovation/streaming_emotion.py \
+  "我今天本来很开心，但是后来真的有点难过" \
+  --model_dir outputs/roberta_wwm_ext \
+  --window_size 6 \
+  --lambda_weight 0.7 \
+  --memory_decay 0.75 \
+  --table
+```
+
 显存足够时可以把 `--batch_size` 调到 `16`。如果只是测试流程：
 
 ```bash
@@ -36,6 +53,7 @@ conda run -n ai_girl python evaluate.py --model_dir outputs/smoke --max_samples 
 - `data/processed/`：转换后的 `train.csv/dev.csv/test.csv`。
 - `outputs/roberta_wwm_ext/`：微调后的模型和 tokenizer。
 - `results/`：评价指标、分类报告、混淆矩阵。
+- `innovation/`：路线 B 流式情绪状态估计代码。
 
 ## 报告可写重点
 
